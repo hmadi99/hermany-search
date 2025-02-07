@@ -1,0 +1,85 @@
+{% extends 'base.html'%}
+{% load static %}
+
+{% block contant %}
+<div class="add">
+  <nav class="navbar sticky-top"  >
+    <div class="container-fluid">
+      <i class="bi bi-calendar-event fs-2 text-light"></i>  <!-- أيقونة الجدول الدراسي -->   
+      <h2 class="text-light"> الجدول الدراسي الذكي</h2>
+      <button class="navbar-toggler " type="button"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon "></span>
+      </button>
+      <n class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header " >
+          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">القائمة الرئسية </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'home' %}">الصفحة الرئسية </a>
+            </li>
+            
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'add_lecturer' %}">اضافة محاضر </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'add_department' %}">اضافة قسم دراسي</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'add_room' %}">اضافة قاعة دراسية</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'add_course' %}">اضافة مقرر دراسي </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'generate_schedule' %}">توليد الجدول </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'generate_schedule_final' %}">توليد جدول الامتحانات </a>
+              </li>
+          </ul>
+        
+    </div>
+</nav>
+  
+<div class="container mt-5 add" dir="rtl">
+    <h2>إضافة محاضر</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">اسم المحاضر:</label>
+            <input type="text" name="name" id="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="number">رقم المحاضر: </label>
+            <input type="text" name="number" id="department" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">إضافة المحاضر</button>
+    </form>
+
+    <h2 class="mt-5">قائمة المحاضرين</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>الاسم</th>
+                <th>رقم المحاضر</th>
+                <th>الحذف</th>
+    
+            </tr>
+        </thead>
+        <tbody>
+          {% for lecturer in lecturers %}
+            <tr>
+                <td>{{ lecturer.name }}</td>
+                <td>{{ lecturer.number }}</td>
+                <td>
+                  <a href="{% url 'delete_lecturer' lecturer.id %}" class="btn btn-danger btn-sm">حذف</a>
+              </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div></div>
+{% endblock %}

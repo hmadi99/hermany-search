@@ -1,0 +1,105 @@
+{% extends 'base.html'%}
+{% load static %}
+
+{% block contant %}
+<div class="add">
+  <nav class="navbar sticky-top"  >
+    <div class="container-fluid">
+      <i class="bi bi-calendar-event fs-2 text-light"></i>  <!-- أيقونة الجدول الدراسي -->   
+      <h2 class="text-light"> الجدول الدراسي الذكي</h2>
+      <button class="navbar-toggler " type="button"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon "></span>
+      </button>
+      <n class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header " >
+          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">القائمة الرئسية </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'home' %}">الصفحة الرئسية </a>
+            </li>
+            
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'add_lecturer' %}">اضافة محاضر </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'add_department' %}">اضافة قسم دراسي</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'add_room' %}">اضافة قاعة دراسية</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'add_course' %}">اضافة مقرر دراسي </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'generate_schedule' %}">توليد الجدول </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'generate_schedule_final' %}">توليد جدول الامتحانات </a>
+              </li>
+          </ul>
+        
+    </div>
+</nav>
+<div class="container mt-5 add" dir="rtl">
+  <h2>إضافة غرفة دراسية</h2>
+  <form method="POST">
+      {% csrf_token %}
+      <div class="form-group">
+          <label for="name">اسم الغرفة الدراسية:</label>
+          <input type="text" name="name" id="name" class="form-control" required>
+      </div>
+      <div class="form-group">
+          <label for="capacity">سعة الغرفة الدراسية: </label>
+          <input type="number" name="capacity" id="capacity" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="room_type">نوع الغرفة:</label>
+        <select name="room_type" id="room_type" class="form-control" required>
+            <option value="hall">قاعة</option>
+            <option value="computer_lab">معمل حاسوب</option>
+            <option value="chemistry_lab">معمل كيمياء</option>
+            <option value="rocks_lab">معمل صخور</option>
+            <option value="biology_lab">معمل أحياء</option>
+            <option value="movable_prosthetics_lab">معمل التركيبات المتحركة</option>
+            <option value="dental_lab">معمل صناعة الأسنان</option>
+            <option value="fixed_prosthetics_lab">معمل التركيبات الثابتة</option>
+            <option value="casting_lab">معمل الصب</option>
+            <option value="conservative_lab">معمل العلاج التحفظي</option>
+            <option value="electrical_engineering_lab">معمل هندسة كهربائية وإلكترونية</option>
+            <option value="materials_engineering_lab">معمل هندسة المواد</option>
+            <option value="renewable_energy_lab">معمل الطاقات المتجددة</option>
+        </select>
+    </div>
+    
+      <button type="submit" class="btn btn-primary mt-3">إضافة غرفة دراسية</button>
+  </form>
+
+  <h2 class="mt-5">قائمة الغرف الدراسية</h2>
+  <table class="table table-striped">
+      <thead>
+          <tr>
+              <th>اسم القاعة</th>
+              <th>سعة القاعة</th>
+              <th>نوع الغرفة</th>
+              <th>الحذف</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for room in rooms %}
+          <tr>
+              <td>{{ room.name }}</td>
+              <td>{{ room.capacity }}</td>
+              <td>{{ room.get_room_type_display }}</td>
+              <td>
+                <a href="{% url 'delete_room' room.id %}" class="btn btn-danger btn-sm">حذف</a>
+              </td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+</div>
+</div>
+{% endblock %}

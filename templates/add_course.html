@@ -1,0 +1,134 @@
+{% extends 'base.html'%}
+{% load static %}
+
+{% block contant %}
+<div class="add">
+    <nav class="navbar sticky-top"  >
+        <div class="container-fluid">
+          <i class="bi bi-calendar-event fs-2 text-light"></i>  <!-- أيقونة الجدول الدراسي -->   
+          <h2 class="text-light"> الجدول الدراسي الذكي</h2>
+          <button class="navbar-toggler " type="button"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon "></span>
+          </button>
+          <n class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header " >
+              <h5 class="offcanvas-title" id="offcanvasNavbarLabel">القائمة الرئسية </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+              <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="{% url 'home' %}">الصفحة الرئسية </a>
+                </li>
+                
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="{% url 'add_lecturer' %}">اضافة محاضر </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'add_department' %}">اضافة قسم دراسي</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'add_room' %}">اضافة قاعة دراسية</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'add_course' %}">اضافة مقرر دراسي </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'generate_schedule' %}">توليد الجدول </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'generate_schedule_final' %}">توليد جدول الامتحانات </a>
+                  </li>
+              </ul>
+            
+        </div>
+    </nav>
+    <div class="container mt-5 add" dir="rtl">
+        <h2>إضافة مقرر دراسي</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="fw-bold" for="name">اسم المقرر:</label>
+                <input type="text" name="name" id="name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label class="fw-bold" for="code">رمز المقرر:</label>
+                <input type="text" name="code" id="code" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label class="fw-bold" for="required_room_type">نوع الغرفة المطلوبة:</label>
+                <select name="required_room_type" id="required_room_type" class="form-control" required>
+                    <option value="hall">قاعة</option>
+                    <option value="computer_lab">معمل حاسوب</option>
+                    <option value="chemistry_lab">معمل كيمياء</option>
+                    <option value="rocks_lab">معمل صخور</option>
+                    <option value="biology_lab">معمل أحياء</option>
+                </select>
+            </div>
+            <div class="form-group bg-dark-subtle mt-2 p-3 w-25">
+                <label class="fw-bold" for="departments">الأقسام المرتبطة:</label>
+                <div id="departments">
+                    {% for department in departments %}
+                        <div class="form-check">
+                            <input type="checkbox" name="departments" value="{{ department.id }}" class="form-check-input" id="department_{{ department.id }}">
+                            <label class="fw-bold form-check-label" for="department_{{ department.id }}">{{ department }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label  for="lecturer" class="fw-bold">المحاضر:</label>
+                <select name="lecturer" id="lecturer" class="form-control">
+                    {% for lecturer in lecturers %}
+                        <option value="{{ lecturer.id }}">{{ lecturer.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="fw-bold" for="student_count">عدد الطلاب:</label>
+                <input type="number" name="student_count" id="student_count" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">إضافة مقرر دراسي</button>
+        </form>
+
+        <h2 class="mt-5">قائمة المقررات</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>اسم المقرر</th>
+            <th>رمز المقرر</th>
+            <th>نوع الغرفة المطلوبة</th>
+            <th>القسم</th>
+            <th>المحاضر</th>
+            <th>عدد الطلاب</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for course in courses %}
+        <tr>
+            <td>{{ course.name }}</td>
+            <td>{{ course.code }}</td>
+            <td>{{ course.get_required_room_type_display }}</td>
+            <td>
+                {% for department in course.department.all %}
+                    {{ department}} 
+                {% endfor %}
+            </td>
+            <td>{{ course.lecturer.name }}</td>
+            <td>{{ course.student_count }}</td>
+            <td>
+                <a href="{% url 'edit_course' course.id %}" class="btn btn-primary btn-sm my-2 w-100">تعديل</a>
+                <a href="{% url 'delete_course' course.id %}" class="btn btn-danger btn-sm w-100">حذف</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+ 
+    </div>
+
+
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contant %}
+<div class="container mt-5" dir="rtl">
+    <h2>تعديل مقرر دراسي</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="fw-bold" for="name">اسم المقرر:</label>
+            <input type="text" name="name" id="name" class="form-control" value="{{ course.name }}" required>
+        </div>
+        <div class="form-group">
+            <label class="fw-bold" for="code">رمز المقرر:</label>
+            <input type="text" name="code" id="code" class="form-control" value="{{ course.code }}" required>
+        </div>
+        <div class="form-group">
+            <label class="fw-bold" for="required_room_type">نوع الغرفة المطلوبة:</label>
+            <select name="required_room_type" id="required_room_type" class="form-control" required>
+                <option value="hall" {% if course.required_room_type == "hall" %}selected{% endif %}>قاعة</option>
+                <option value="computer_lab" {% if course.required_room_type == "computer_lab" %}selected{% endif %}>معمل حاسوب</option>
+                <option value="chemistry_lab" {% if course.required_room_type == "chemistry_lab" %}selected{% endif %}>معمل كيمياء</option>
+                <option value="rocks_lab" {% if course.required_room_type == "rocks_lab" %}selected{% endif %}>معمل صخور</option>
+                <option value="biology_lab" {% if course.required_room_type == "biology_lab" %}selected{% endif %}>معمل أحياء</option>
+                <option value="movable_prosthetics_lab" {% if course.required_room_type == "movable_prosthetics_lab" %}selected{% endif %}>معمل التركيبات المتحركة</option>
+                <option value="dental_lab" {% if course.required_room_type == "dental_lab" %}selected{% endif %}>معمل صناعة الأسنان</option>
+                <option value="fixed_prosthetics_lab" {% if course.required_room_type == "fixed_prosthetics_lab" %}selected{% endif %}>معمل التركيبات الثابتة</option>
+                <option value="casting_lab" {% if course.required_room_type == "casting_lab" %}selected{% endif %}>معمل الصب</option>
+                <option value="conservative_lab" {% if course.required_room_type == "conservative_lab" %}selected{% endif %}>معمل العلاج التحفظي</option>
+                <option value="electrical_engineering_lab" {% if course.required_room_type == "electrical_engineering_lab" %}selected{% endif %}>معمل هندسة كهربائية وإلكترونية</option>
+                <option value="materials_engineering_lab" {% if course.required_room_type == "materials_engineering_lab" %}selected{% endif %}>معمل هندسة المواد</option>
+                <option value="renewable_energy_lab" {% if course.required_room_type == "renewable_energy_lab" %}selected{% endif %}>معمل الطاقات المتجددة</option>
+
+            </select>
+        </div>
+        <div class="form-group bg-dark-subtle mt-2 p-3 w-25">
+            <label class="fw-bold" for="departments">الأقسام المرتبطة:</label>
+            <div id="departments">
+                {% for department in departments %}
+                    <div class="form-check">
+                        <input type="checkbox" name="departments" value="{{ department.id }}" class="form-check-input" id="department_{{ department.id }}"
+                               {% if department in course.department.all %}checked{% endif %}>
+                        <label class="fw-bold form-check-label" for="department_{{ department.id }}">{{ department }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="lecturer" class="fw-bold">المحاضر:</label>
+            <select name="lecturer" id="lecturer" class="form-control">
+                {% for lecturer in lecturers %}
+                    <option value="{{ lecturer.id }}" {% if lecturer == course.lecturer %}selected{% endif %}>{{ lecturer.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="fw-bold" for="student_count">عدد الطلاب:</label>
+            <input type="number" name="student_count" id="student_count" class="form-control" value="{{ course.student_count }}" required>
+        </div>
+        <button type="submit" class="btn btn-success mt-3">حفظ التعديلات</button>
+        <a href="{% url 'add_course' %}" class="btn btn-secondary mt-3">إلغاء</a>
+    </form>
+</div>
+{% endblock %}

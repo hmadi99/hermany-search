@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contant %}
+<div class="container mt-5" dir="rtl">
+    <h1 class="text-center mb-4 text-primary fw-bold">اختيار الأيام والفترات</h1>
+
+    <form method="POST" class="border p-4 shadow-sm bg-light rounded-3" style="max-width: 500px; margin: auto;" onsubmit="return validateSelection()">
+    {% csrf_token %}
+
+    <h3 class="mb-3 text-dark">اختر الأيام:</h3>
+    <div class="d-grid gap-2" id="days-container">
+        {% for day in days %}
+            <div class="form-check d-flex align-items-center gap-2 p-2 rounded bg-white shadow-sm hover-effect">
+                <input class="form-check-input ms-2" type="checkbox" name="days" value="{{ day.id }}" id="day{{ day.id }}">
+                <label class="form-check-label fw-semibold" for="day{{ day.id }}">
+                    {{ day.name }}
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+
+    <h3 class="mt-4 mb-3 text-dark">اختر الفترات:</h3>
+    <div class="d-grid gap-2" id="periods-container">
+        {% for period in periods %}
+            <div class="form-check d-flex align-items-center gap-2 p-2 rounded bg-white shadow-sm hover-effect">
+                <input class="form-check-input ms-2" type="checkbox" name="periods" value="{{ period.id }}" id="period{{ period.id }}">
+                <label class="form-check-label fw-semibold" for="period{{ period.id }}">
+                    {{ period.name }}
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-4 w-100 fw-bold shadow">حفظ الإعدادات</button>
+</form>
+</div>
+
+<style>
+    .form-check-input {
+        transform: scale(1.2); /* تكبير مربع الاختيار قليلاً */
+        cursor: pointer;
+    }
+    .form-check-label {
+        cursor: pointer;
+        font-size: 1.1rem; /* زيادة حجم الخط */
+    }
+    .hover-effect:hover {
+        background-color: #f0f8ff; /* تأثير عند تمرير الماوس */
+        transition: background-color 0.3s ease;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<script>
+    function validateSelection() {
+        // التحقق من الأيام
+        const days = document.querySelectorAll('#days-container input[type="checkbox"]:checked');
+        if (days.length < 2) {
+            alert('يجب اختيار يومين على الأقل.');
+            return false; // منع إرسال النموذج
+        }
+
+        // التحقق من الفترات
+        const periods = document.querySelectorAll('#periods-container input[type="checkbox"]:checked');
+        if (periods.length < 2) {
+            alert('يجب اختيار فترتين على الأقل.');
+            return false; // منع إرسال النموذج
+        }
+
+        return true; // السماح بإرسال النموذج
+    }
+</script>
+{% endblock %}

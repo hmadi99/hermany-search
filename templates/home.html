@@ -1,0 +1,104 @@
+{% extends 'base.html'%}
+{% load static %}
+
+{% block contant %}
+<div class="add">
+<nav class="navbar sticky-top bg-info"  >
+    <div class="container-fluid">
+      <img src="{% static 'img/icon_AI.png' %}"> <!-- أيقونة الجدول الدراسي -->   
+      <h2 class="text-light">الجدول الدراسي الذكي {% if user_college %} - ل{{user_college.name}}{% endif %}</h2>
+      <button class="navbar-toggler " type="button"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon "></span>
+      </button>
+      <n class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header " >
+          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">القائمة الرئسية </h5>
+          <button type="button" class="btn-close " data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'home' %}">الصفحة الرئسية </a>
+            </li>
+            {% if user.is_superuser %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'term' %}">انشاء فصل دراسي جديد</a>
+          </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'manage_colleges' %}">إدارة الكليات</a>
+          </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'manage_users' %}">إدارة المستخدمين</a>
+          </li>
+          {% elif user_college %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'add_lecturer' %}">اضافة محاضر </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'add_department' %}">اضافة قسم دراسي</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'add_room' %}">اضافة قاعة دراسية</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'add_course' %}">اضافة مقرر دراسي </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'choose' %}">اختيار المواعيد </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'generate_schedule' %}">توليد الجدول </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'generate_schedule_final' %}">توليد جدول الامتحانات </a>
+              </li>
+              {% endif %}
+          </ul>
+        
+    </div>
+</nav>
+<div class="m-5 mt-5 pb-5" dir="rtl">
+  <div class="row">
+      <div class="col-sm-12 col-md-6 col-lg-12 mb-3">
+          <div class="card text-white bg-primary">
+              <div class="card-body">
+                  <i class="bi bi-building fs-1"></i>
+                  <h5 class="card-title">عدد الغرف</h5>
+                  <p class="card-text">{{ rooms_count }}</p>
+              </div>
+          </div>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-12 mb-3 ">
+          <div class="card text-white bg-success ">
+              <div class="card-body">
+                  <i class="bi bi-person fs-1"></i>
+                  <h5 class="card-title">عدد المحاضرين</h5>
+                  <p class="card-text">{{ lecturers_count }}</p>
+              </div>
+          </div>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6 mb-3">
+          <div class="card text-white bg-info">
+              <div class="card-body">
+                  <i class="bi bi-diagram-3 fs-1"></i>
+                  <h5 class="card-title">عدد الأقسام</h5>
+                  <p class="card-text">{{ departments_count }}</p>
+              </div>
+          </div>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6 mb-3">
+          <div class="card text-white bg-warning">
+              <div class="card-body">
+                  <i class="bi bi-journal fs-1"></i>
+                  <h5 class="card-title">عدد المقررات</h5>
+                  <p class="card-text">{{ courses_count }}</p>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+
+</div>
+{% endblock %}

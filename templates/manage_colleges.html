@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block contant %}
+<div class="container mt-5" dir="rtl">
+    <h1 class="text-center mb-4">إدارة الكليات</h1>
+
+    <!-- نموذج إضافة الكلية -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>إضافة كلية جديدة</h2>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="college_name" class="form-label">اسم الكلية</label>
+                    <input type="text" name="college_name" id="college_name" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="user_id" class="form-label">اختيار الحساب المرتبط</label>
+                    <select name="user_id" id="user_id" class="form-control" required>
+                        {% for user in users %}
+                            <option value="{{ user.id }}">{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="logo" class="form-label">شعار الكلية</label>
+                    <input type="file" name="logo" id="logo" class="form-control" accept="image/*">
+                </div>
+                <button type="submit" name="add_college" class="btn btn-primary">إضافة كلية</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- عرض الكليات مع إمكانية حذف -->
+    <div class="card">
+        <div class="card-header">
+            <h2>قائمة الكليات</h2>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <thead class="table-light">
+                    <tr>
+                        <th>اسم الكلية</th>
+                        <th>الحساب المرتبط</th>
+                        <th>الشعار</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for college in colleges %}
+                    <tr>
+                        <td>{{ college.name }}</td>
+                        <td>{{ college.user.username }}</td>
+                        <td>
+                            {% if college.logo %}
+                                <img src="{{ college.logo.url }}" alt="شعار الكلية" width="50" height="50">
+                            {% else %}
+                                لا يوجد شعار
+                            {% endif %}
+                        </td>
+                        <td>
+                            <!-- نموذج حذف كلية -->
+                            <form method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="college_id" value="{{ college.id }}">
+                                <a href="{% url 'edit_college' college.id %}" class="btn btn-sm btn-warning">
+                                    <i class="bi bi-pencil-square"></i> تعديل
+                                </a>
+                                <button type="submit" name="delete_college" class="btn btn-danger btn-sm" onclick="return confirm('هل أنت متأكد من حذف هذه الكلية؟')">
+                                    حذف
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contant %}
+<div class="container mt-5" dir="rtl">
+    <h1 class="text-center mb-4">إضافة مستخدم جديد</h1>
+    
+    <form method="post" class="form-container">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="username" class="form-label">اسم المستخدم</label>
+            <input type="text" name="username" class="form-control" id="username" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">البريد الإلكتروني</label>
+            <input type="email" name="email" class="form-control" id="email" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">كلمة المرور</label>
+            <input type="password" name="password" class="form-control" id="password" required>
+        </div>
+
+        <div class="mb-3 form-check">
+            <input type="checkbox" name="is_superuser" value="true" class="form-check-input" id="is_admin">
+            <label class="form-check-label" for="is_admin">هل هو مشرف؟</label>
+        </div>
+
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">إضافة مستخدم</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
